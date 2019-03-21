@@ -17,11 +17,14 @@ from pylab import rcParams
 
 # %matplotlib inline
 
+name = 'movie'  # name of the file
+epochs = 1
+
 sns.set(style='whitegrid', palette='muted', font_scale=1.5)
 
 rcParams['figure.figsize'] = 12, 5
 
-path = 'nietzsche.txt'
+path = name + '.txt'
 text = open(path).read().lower()
 print('corpus length:', len(text))
 
@@ -55,18 +58,17 @@ model.add(Activation('softmax'))
 optimizer = RMSprop(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
-model = load_model('keras_model.h5')
+# model = load_model(name + '_model.h5')
 
-#history = pickle.load(open("history.p", "rb"))
+#history = pickle.load(open(name + "_history.p", "rb"))
 
-history = model.fit(X, y, validation_split=0.05, batch_size=128, epochs=60, shuffle=True).history
+history = model.fit(X, y, validation_split=0.05, batch_size=128, epochs=epochs, shuffle=True).history
 
-model.save('keras_model.h5')
-pickle.dump(history, open("history.p", "wb"))
+model.save(name + '_model.h5')
+pickle.dump(history, open(name + "_history.p", "wb"))
 
-model = load_model('keras_model.h5')
-history = pickle.load(open("history.p", "rb"))
-
+model = load_model(name + '_model.h5')
+history = pickle.load(open(name + "_history.p", "rb"))
 
 def prepare_input(text):
     x = np.zeros((1, SEQUENCE_LENGTH, len(chars)))
@@ -108,7 +110,6 @@ def predict_completions(text, n=3):
     next_indices = sample(preds, n)
     return [indices_char[idx] + predict_completion(text[1:] + indices_char[idx]) for idx in next_indices]
 
-"""
 quotes = [
     "It is not a lack of love, but a lack of friendship that makes unhappy marriages.",
     "That which does not kill us makes us stronger.",
@@ -117,15 +118,15 @@ quotes = [
     "It is hard enough to remember my opinions, without also remembering my reasons for them!"
 ]
 
+"""
+
+quotes = ["Sie werden mir glauben, daß in der neugotischen Backstein-Herz-Jesu-Kirche und mithin beim linken",
+          "Seitenaltar alles beim alten geblieben war. Es saß der nacktrosa Jesusknabe immer noch auf dem",
+          "linken Oberschenkel der Jungfrau"]
+"""
+
 for q in quotes:
     seq = q[:40].lower()
     print(seq)
     print(predict_completions(seq, 5))
     print()
-"""
-
-output = "I'm not upset that you lied to me, I'm upset that"
-for i in range(100):
-    x = predict_completions(output[-40:].lower(), 5)
-    output += x[i % 5]
-print(output)

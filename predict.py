@@ -1,6 +1,8 @@
 import numpy as np
+
 np.random.seed(42)
 import tensorflow as tf
+
 tf.set_random_seed(42)
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Activation
@@ -16,9 +18,12 @@ import seaborn as sns
 from pylab import rcParams
 import random
 
-random.seed(a=99)
+# random.seed(a=123)
 
-path = 'nietzsche.txt'
+name = 'movie'  # name of the file
+output = "                                       \n"  # output sample text, must be 40 chars
+
+path = name + '.txt'
 text = open(path).read().lower()
 print('corpus length:', len(text))
 
@@ -28,9 +33,10 @@ indices_char = dict((i, c) for i, c in enumerate(chars))
 
 SEQUENCE_LENGTH = 40
 
-model = load_model('keras_model.h5')
+model = load_model(name + '_model.h5')
 
-history = pickle.load(open("history.p", "rb"))
+history = pickle.load(open(name + "_history.p", "rb"))
+
 
 def prepare_input(text):
     x = np.zeros((1, SEQUENCE_LENGTH, len(chars)))
@@ -66,14 +72,16 @@ def predict_completion(text):
         if len(original_text + completion) + 2 > len(original_text) and next_char == ' ':
             return completion
 
+
 def predict_completions(text, n=3):
     x = prepare_input(text)
     preds = model.predict(x, verbose=0)[0]
     next_indices = sample(preds, n)
     return [indices_char[idx] + predict_completion(text[1:] + indices_char[idx]) for idx in next_indices]
 
-output = "                                        "
-for i in range(100):
+
+for i in range(35):
     x = predict_completions(output[-SEQUENCE_LENGTH:].lower(), 5)
+    print(x)
     output += x[random.randint(0, 4)]
 print(output)
