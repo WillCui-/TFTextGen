@@ -17,8 +17,8 @@ from pylab import rcParams
 
 # %matplotlib inline
 
-name = 'movie'  # name of the file
-epochs = 1
+name = 'seuss'  # name of the file
+epochs = 60
 
 sns.set(style='whitegrid', palette='muted', font_scale=1.5)
 
@@ -60,7 +60,7 @@ model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['ac
 
 # model = load_model(name + '_model.h5')
 
-#history = pickle.load(open(name + "_history.p", "rb"))
+# history = pickle.load(open(name + "_history.p", "rb"))
 
 history = model.fit(X, y, validation_split=0.05, batch_size=128, epochs=epochs, shuffle=True).history
 

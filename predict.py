@@ -20,8 +20,8 @@ import random
 
 # random.seed(a=123)
 
-name = 'movie'  # name of the file
-output = "                                       \n"  # output sample text, must be 40 chars
+name = 'seuss'  # name of the file
+output = "I am Sam\nSam I am\n\nThat Sam-I-am!\nThat Sam-I-am!\nI do not like that Sam-I-am!"  # output sample text, must be 40 chars
 
 path = name + '.txt'
 text = open(path).read().lower()
@@ -80,7 +80,7 @@ def predict_completions(text, n=3):
     return [indices_char[idx] + predict_completion(text[1:] + indices_char[idx]) for idx in next_indices]
 
 
-for i in range(35):
+for i in range(100):
     x = predict_completions(output[-SEQUENCE_LENGTH:].lower(), 5)
     print(x)
     output += x[random.randint(0, 4)]
